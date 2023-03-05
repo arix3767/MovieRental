@@ -1,4 +1,4 @@
-package com.github.arix3767.user.entity;
+package com.github.arix3767.user;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

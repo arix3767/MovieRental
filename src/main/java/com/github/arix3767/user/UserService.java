@@ -1,15 +1,11 @@
-package com.github.arix3767.user.service;
+package com.github.arix3767.user;
 
 import com.github.arix3767.enums.Messages;
 import com.github.arix3767.exception.CustomerAlreadyExistsException;
 import com.github.arix3767.exception.InvalidEmailException;
 import com.github.arix3767.exception.MissingDataException;
 import com.github.arix3767.exception.UserNotFoundException;
-import com.github.arix3767.user.converters.UserDtoToUserConverter;
-import com.github.arix3767.user.converters.UserToUserDtoConverter;
 import com.github.arix3767.user.dto.UserDto;
-import com.github.arix3767.user.entity.User;
-import com.github.arix3767.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

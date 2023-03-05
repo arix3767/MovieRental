@@ -1,10 +1,8 @@
-package com.github.arix3767.user.converters;
+package com.github.arix3767.user;
 
-import com.github.arix3767.user.dto.CustomerDto;
 import com.github.arix3767.user.dto.UserDto;
-import com.github.arix3767.user.entity.User;
 
-public enum UserToUserDtoConverter implements Converter<User, UserDto> {
+enum UserToUserDtoConverter implements Converter<User, UserDto> {
     INSTANCE;
 
     @Override
