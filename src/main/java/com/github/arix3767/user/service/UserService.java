@@ -1,7 +1,10 @@
 package com.github.arix3767.user.service;
 
+import com.github.arix3767.enums.Messages;
 import com.github.arix3767.exception.CustomerAlreadyExistsException;
+import com.github.arix3767.exception.InvalidEmailException;
 import com.github.arix3767.exception.MissingDataException;
+import com.github.arix3767.exception.UserNotFoundException;
 import com.github.arix3767.user.converters.UserDtoToUserConverter;
 import com.github.arix3767.user.converters.UserToUserDtoConverter;
 import com.github.arix3767.user.dto.UserDto;
@@ -26,6 +29,20 @@ public class UserService {
         User user = UserDtoToUserConverter.INSTANCE.convert(userDto);
         userRepository.save(user);
         return UserToUserDtoConverter.INSTANCE.convert(user);
+    }
+
+    public String editUser(long id, UserDto newUserData) {
+        if (newUserData.getEmail() == null) {
+            throw new InvalidEmailException();
+        }
+        User user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new)
+                .toBuilder()
+                .email(newUserData.getEmail())
+                .password(newUserData.getPassword())
+                .build();
+        userRepository.save(user);
+        return Messages.USER_EDIT_SUCCESS.getText();
     }
 
 }
