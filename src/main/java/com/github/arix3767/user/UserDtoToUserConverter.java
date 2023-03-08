@@ -9,8 +9,8 @@ enum UserDtoToUserConverter implements Converter<UserDto, User> {
     @Override
     public User convert(UserDto userDto) {
         return User.builder()
+                .id(userDto.getId())
                 .email(userDto.getEmail())
-                .password(userDto.getPassword())
                 .build();
     }
 }

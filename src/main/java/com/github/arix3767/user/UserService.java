@@ -1,10 +1,10 @@
 package com.github.arix3767.user;
 
-import com.github.arix3767.enums.Messages;
 import com.github.arix3767.exception.CustomerAlreadyExistsException;
 import com.github.arix3767.exception.InvalidEmailException;
 import com.github.arix3767.exception.MissingDataException;
 import com.github.arix3767.exception.UserNotFoundException;
+import com.github.arix3767.user.dto.AddUserRequest;
 import com.github.arix3767.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,32 +13,35 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserDto addUser(UserDto userDto) {
-        if (userDto.getEmail() == null || userDto.getPassword() == null) {
+    public UserDto addUser(AddUserRequest addUserRequest) {
+        if (addUserRequest.getEmail() == null || addUserRequest.getPassword() == null) {
             throw new MissingDataException();
         }
-        if (userRepository.existByEmail(userDto.getEmail())) {
+        if (addUserRequest.getEmail().isBlank() || addUserRequest.getPassword().isBlank()) {
+            throw new MissingDataException();
+        }
+        if (userRepository.existByEmail(addUserRequest.getEmail())) {
             throw new CustomerAlreadyExistsException();
         }
-        User user = UserDtoToUserConverter.INSTANCE.convert(userDto);
-        userRepository.save(user);
-        return UserToUserDtoConverter.INSTANCE.convert(user);
+        User user = UserDtoToUserConverter.INSTANCE.convert(addUserRequest);
+        User savedUser = userRepository.save(user);
+        return UserToUserDtoConverter.INSTANCE.convert(savedUser);
     }
 
-    public String editUser(long id, UserDto newUserData) {
-        if (newUserData.getEmail() == null) {
+    public UserDto editUser(AddUserRequest addUserRequest) {
+        if (addUserRequest.getEmail() == null || addUserRequest.getEmail().isBlank()) {
             throw new InvalidEmailException();
         }
-        User user = userRepository.findById(id)
+        User user = userRepository.findByEmail(addUserRequest.getEmail())
                 .orElseThrow(UserNotFoundException::new)
                 .toBuilder()
-                .email(newUserData.getEmail())
-                .password(newUserData.getPassword())
+                .email(addUserRequest.getEmail())
+                .password(addUserRequest.getPassword())
                 .build();
-        userRepository.save(user);
-        return Messages.USER_EDIT_SUCCESS.getText();
+        User savedUser = userRepository.save(user);
+        return UserToUserDtoConverter.INSTANCE.convert(savedUser);
     }
 
 }

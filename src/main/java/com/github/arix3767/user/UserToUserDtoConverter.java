@@ -10,7 +10,6 @@ enum UserToUserDtoConverter implements Converter<User, UserDto> {
         return UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .password(user.getPassword())
                 .build();
     }
 }
