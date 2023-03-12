@@ -1,12 +1,11 @@
 package com.github.arix3767.result;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-public enum ResultParameter {
+@Getter
+public enum ResultProperty {
 
-
-
+    CONFLICTED_ID
 }

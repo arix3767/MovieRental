@@ -9,7 +9,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddUserRequest extends UserDto {
+public class AddUserRequestDto {
 
     String email;
     String password;
