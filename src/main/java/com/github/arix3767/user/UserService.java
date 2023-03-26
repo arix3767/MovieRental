@@ -1,7 +1,5 @@
 package com.github.arix3767.user;
 
-import com.github.arix3767.exception.InvalidEmailException;
-import com.github.arix3767.exception.UserNotFoundException;
 import com.github.arix3767.result.*;
 import com.github.arix3767.user.dto.AddUserRequestDto;
 import com.github.arix3767.user.dto.UserDto;
@@ -25,13 +23,13 @@ public class UserService {
         if (addUserRequestDto.getEmail().isBlank() || addUserRequestDto.getPassword().isBlank()) {
             return new MissingDataResult<>();
         }
-        if (!userRepository.existByEmail(addUserRequestDto.getEmail())) {
+        if (userRepository.existsByEmail(addUserRequestDto.getEmail())) {
             UUID id = userRepository.findIdByEmail(addUserRequestDto.getEmail());
             Map<ResultProperty, String> properties = Map.of(ResultProperty.CONFLICTED_ID, id.toString());
             return new UserAlreadyExistsResult<>(properties);
         }
-        User user = UserRequestDtoToUserConverter.INSTANCE.convert(addUserRequestDto);
-        User savedUser = userRepository.save(user);
+        UserEntity user = UserRequestDtoToUserConverter.INSTANCE.convert(addUserRequestDto);
+        UserEntity savedUser = userRepository.save(user);
         UserDto userDto = UserToUserDtoConverter.INSTANCE.convert(savedUser);
         return new ApiResult<>(userDto);
     }
@@ -43,15 +41,15 @@ public class UserService {
         if (addUserRequestDto.getEmail().isBlank() || addUserRequestDto.getPassword().isBlank()) {
             return new MissingDataResult<>();
         }
-        Optional<User> user = userRepository.findByEmail(addUserRequestDto.getEmail());
+        Optional<UserEntity> user = userRepository.findByEmail(addUserRequestDto.getEmail());
         if (user.isEmpty()) {
             return new NotFoundResult<>();
         }
-        User userToSave = user.get().toBuilder()
+        UserEntity userToSave = user.get().toBuilder()
                 .email(addUserRequestDto.getEmail())
                 .password(addUserRequestDto.getPassword())
                 .build();
-        User savedUser = userRepository.save(userToSave);
+        UserEntity savedUser = userRepository.save(userToSave);
         UserDto userDto = UserToUserDtoConverter.INSTANCE.convert(savedUser);
         return new ApiResult<>(userDto);
     }
