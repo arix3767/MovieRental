@@ -1,0 +1,14 @@
+server:
+  servlet:
+    context-path: /movie-rental
+spring:
+  datasource:
+    url: jdbc:h2:mem:movie-rental
+    username: user
+    password: 1234
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
