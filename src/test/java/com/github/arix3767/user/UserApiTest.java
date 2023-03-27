@@ -53,7 +53,7 @@ class UserApiTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(gson.toJson(addUserRequestDto)))
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
 
     /**
