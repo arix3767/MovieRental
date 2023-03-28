@@ -20,6 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * This class contains integration
+ * tests of different user
+ * related functions
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserApiTest {
@@ -40,6 +45,12 @@ class UserApiTest {
         userRepository.deleteAll();
     }
 
+    /**
+     * given: user dto model
+     * when: this user is added
+     * then: user should be added
+     * and: 201 status should be received
+     */
     @Test
     void shouldAddUser() throws Exception {
         AddUserRequestDto addUserRequestDto = buildAddUserRequestDto();
@@ -50,6 +61,12 @@ class UserApiTest {
                 .andExpect(status().isCreated());
     }
 
+    /**
+     * given: user credentials are missing
+     * when: this user is added
+     * then: user should not be added
+     * and: 404 status should be received
+     */
     @Test
     void shouldNotAddUserWhenCredentialsAreMissing() throws Exception {
         AddUserRequestDto addUserRequestDto = buildAddUserRequestDto().toBuilder()
@@ -95,6 +112,17 @@ class UserApiTest {
                 .build();
     }
 
+    /**
+     * given: user to be updated and
+     * updating data from second user
+     *
+     * when: first user is added
+     *
+     * then: second user overrides first
+     * user data with his own data
+     *
+     * and: 200 status should be received
+     */
     @Test
     void shouldEditUser() throws Exception {
         UserDto updatedUser = UserDto.builder()
@@ -114,6 +142,11 @@ class UserApiTest {
 
     }
 
+    /**
+     * retrieve User path from UserDto
+     * @param userDto
+     * @return String - User path
+     */
     private String getUserPath(UserDto userDto) {
         return String.format(SPECIFIC_USER_PATH, userDto.getId());
     }

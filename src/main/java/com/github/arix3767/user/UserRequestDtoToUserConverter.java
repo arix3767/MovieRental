@@ -6,6 +6,12 @@ enum UserRequestDtoToUserConverter implements Converter<AddUserRequestDto, UserE
 
     INSTANCE;
 
+    /**
+     * Converts addUserRequestDto model to UserEntity database model
+     * using singleton
+     * @param addUserRequestDto
+     * @return UserEntity
+     */
     @Override
     public UserEntity convert(AddUserRequestDto addUserRequestDto) {
         return UserEntity.builder()

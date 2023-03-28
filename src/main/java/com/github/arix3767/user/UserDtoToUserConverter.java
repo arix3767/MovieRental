@@ -6,6 +6,12 @@ enum UserDtoToUserConverter implements Converter<UserDto, UserEntity> {
 
     INSTANCE;
 
+    /**
+     * Converts UserDto to UserEntity model
+     * using singleton
+     * @param userDto
+     * @return UserEntity
+     */
     @Override
     public UserEntity convert(UserDto userDto) {
         return UserEntity.builder()

@@ -10,12 +10,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service containing business logic for
+ * user related functions
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
 
+    /**
+     * checks requirements for adding user
+     * than adds user to database after that
+     * returns the result of method
+     * @param addUserRequestDto - dto model of user
+     * @return ApiResult<UserDto> - result of the method
+     */
     public ApiResult<UserDto> addUser(AddUserRequestDto addUserRequestDto) {
         if (addUserRequestDto.getEmail() == null || addUserRequestDto.getPassword() == null) {
             return new MissingDataResult<>();
@@ -34,6 +45,13 @@ public class UserService {
         return new ApiResult<>(userDto);
     }
 
+    /**
+     * checks requirements for editing user than
+     * edit all information about User
+     * after that returns the result of method
+     * @param addUserRequestDto - dto model of user
+     * @return ApiResult<UserDto> - result of the method
+     */
     public ApiResult<UserDto> editUser(AddUserRequestDto addUserRequestDto) {
         if (addUserRequestDto.getEmail() == null || addUserRequestDto.getPassword() == null) {
             return new MissingDataResult<>();
