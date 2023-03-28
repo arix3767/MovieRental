@@ -1,6 +1,7 @@
 package com.github.arix3767.user;
 
 import com.github.arix3767.user.dto.AddUserRequestDto;
+import com.github.arix3767.user.dto.UserDto;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,15 +12,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserApiTest {
 
-    public static final String USER_PATH = "/user";
+    private static final String USER_PATH = "/user";
+    private static final String SPECIFIC_USER_PATH = USER_PATH + "/%d";
+    private static final String ROOT_JSON_PATH = "$";
 
     @Autowired
     private MockMvc mockMvc;
@@ -82,5 +89,42 @@ class UserApiTest {
                 .build();
     }
 
+    private UserDto buildUserDto() {
+        return UserDto.builder()
+                .email("stefan")
+                .build();
+    }
 
-}
+    @Test
+    void shouldEditUser() throws Exception {
+        UserDto updatedUser = UserDto.builder()
+                .id(UUID.randomUUID())
+                .email("4321")
+                .build();
+        UserEntity user = UserDtoToUserConverter.INSTANCE.convert(buildUserDto());
+        UserEntity savedUser = userRepository.save(user);
+        UUID savedUserId = userRepository.findIdByEmail(savedUser.getEmail());
+        mockMvc.perform(put(SPECIFIC_USER_PATH + savedUserId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(gson.toJson(updatedUser)))
+                .andDo(print())
+                .andExpect(status().isFound())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
+                .andExpect(jsonPath(ROOT_JSON_PATH).isString());
+
+    }
+
+    private String getUserPath(UserDto userDto) {
+        return String.format(SPECIFIC_USER_PATH, userDto.getId());
+    }
+        @Test
+        void shouldNotEditUserWhenCredentialsAreMissing () {
+        UserDto updatedUser = UserDto.builder()
+                .email("9999")
+                .build();
+
+
+        }
+
+
+    }
