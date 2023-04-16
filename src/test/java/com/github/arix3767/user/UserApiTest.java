@@ -3,7 +3,6 @@ package com.github.arix3767.user;
 import com.github.arix3767.user.dto.AddUserRequestDto;
 import com.github.arix3767.user.dto.UserDto;
 import com.google.gson.Gson;
-import org.h2.engine.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,6 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * This class contains integration
+ * tests of different user
+ * related functions
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 class UserApiTest {
@@ -41,6 +45,12 @@ class UserApiTest {
         userRepository.deleteAll();
     }
 
+    /**
+     * given: user dto model
+     * when: this user is added
+     * then: user should be added
+     * and: 201 status should be received
+     */
     @Test
     void shouldAddUser() throws Exception {
         AddUserRequestDto addUserRequestDto = buildAddUserRequestDto();
@@ -51,6 +61,12 @@ class UserApiTest {
                 .andExpect(status().isCreated());
     }
 
+    /**
+     * given: user credentials are missing
+     * when: this user is added
+     * then: user should not be added
+     * and: 404 status should be received
+     */
     @Test
     void shouldNotAddUserWhenCredentialsAreMissing() throws Exception {
         AddUserRequestDto addUserRequestDto = buildAddUserRequestDto().toBuilder()
@@ -103,6 +119,17 @@ class UserApiTest {
                 .build();
     }
 
+    /**
+     * given: user to be updated and
+     * updating data from second user
+     * <p>
+     * when: first user is added
+     * <p>
+     * then: second user overrides first
+     * user data with his own data
+     * <p>
+     * and: 200 status should be received
+     */
     @Test
     void shouldEditUser() throws Exception {
         UserEntity updatedUser = UserEntity.builder()
@@ -112,8 +139,8 @@ class UserApiTest {
                 .build();
         UserEntity savedUser = userRepository.save(buildUser());
         mockMvc.perform(put(getUserPath(savedUser))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(updatedUser)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(updatedUser)))
                 .andDo(print())
                 .andExpect(status().isFound())
                 .andExpect(jsonPath(ROOT_JSON_PATH).isNotEmpty())
@@ -121,17 +148,24 @@ class UserApiTest {
 
     }
 
+    /**
+     * retrieve User path from userEntity
+     *
+     * @param userEntity
+     * @return String - User path
+     */
     private String getUserPath(UserEntity userEntity) {
         return String.format(SPECIFIC_USER_PATH, userEntity.getId().toString());
     }
-        @Test
-        void shouldNotEditUserWhenCredentialsAreMissing () {
+
+    @Test
+    void shouldNotEditUserWhenCredentialsAreMissing() {
         UserDto updatedUser = UserDto.builder()
                 .email("9999")
                 .build();
 
 
-        }
-
-
     }
+
+
+}

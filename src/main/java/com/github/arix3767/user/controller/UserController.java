@@ -10,6 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * manage all user related Http trafic
+ * based on service response
+ * returns appropriate Http status
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
