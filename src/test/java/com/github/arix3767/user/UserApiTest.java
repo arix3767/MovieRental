@@ -3,6 +3,7 @@ package com.github.arix3767.user;
 import com.github.arix3767.user.dto.AddUserRequestDto;
 import com.github.arix3767.user.dto.UserDto;
 import com.google.gson.Gson;
+import org.h2.engine.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserApiTest {
 
     private static final String USER_PATH = "/user";
-    private static final String SPECIFIC_USER_PATH = USER_PATH + "/%d";
+    private static final String SPECIFIC_USER_PATH = USER_PATH + "/%s";
     private static final String ROOT_JSON_PATH = "$";
 
     @Autowired
@@ -95,16 +96,22 @@ class UserApiTest {
                 .build();
     }
 
+    private UserEntity buildUser() {
+        return UserEntity.builder()
+                .password("1234")
+                .email("marcik")
+                .build();
+    }
+
     @Test
     void shouldEditUser() throws Exception {
-        UserDto updatedUser = UserDto.builder()
+        UserEntity updatedUser = UserEntity.builder()
                 .id(UUID.randomUUID())
-                .email("4321")
+                .email("lala")
+                .password("2345")
                 .build();
-        UserEntity user = UserDtoToUserConverter.INSTANCE.convert(buildUserDto());
-        UserEntity savedUser = userRepository.save(user);
-        UUID savedUserId = userRepository.findIdByEmail(savedUser.getEmail());
-        mockMvc.perform(put(SPECIFIC_USER_PATH + savedUserId)
+        UserEntity savedUser = userRepository.save(buildUser());
+        mockMvc.perform(put(getUserPath(savedUser))
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(gson.toJson(updatedUser)))
                 .andDo(print())
@@ -114,8 +121,8 @@ class UserApiTest {
 
     }
 
-    private String getUserPath(UserDto userDto) {
-        return String.format(SPECIFIC_USER_PATH, userDto.getId());
+    private String getUserPath(UserEntity userEntity) {
+        return String.format(SPECIFIC_USER_PATH, userEntity.getId().toString());
     }
         @Test
         void shouldNotEditUserWhenCredentialsAreMissing () {
